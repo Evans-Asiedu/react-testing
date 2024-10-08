@@ -1,18 +1,34 @@
 import { render, screen } from "@testing-library/react";
 import ProductDetail from "../../src/components/ProductDetail";
-import { products } from "../mocks/data";
 import { http, HttpResponse } from "msw";
 import { server } from "../mocks/server";
+import { db } from "../mocks/db";
 
 describe("ProductDetail", () => {
-  it("should render the list of products", async () => {
-    render(<ProductDetail productId={1} />);
+  let productId: number;
+
+  beforeAll(() => {
+    // product = db.product.create();
+    const product = db.product.create();
+    productId = product.id;
+  });
+
+  afterAll(() => {
+    db.product.delete({ where: { id: { equals: productId } } });
+  });
+
+  it("should render the details of product", async () => {
+    const product = db.product.findFirst({
+      where: { id: { equals: productId } },
+    });
+
+    render(<ProductDetail productId={productId} />);
 
     expect(
-      await screen.findByText(new RegExp(products[0].name))
+      await screen.findByText(new RegExp(product!.name))
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(new RegExp(products[0].price.toString()))
+      await screen.findByText(new RegExp(product!.price.toString()))
     ).toBeInTheDocument();
   });
 
