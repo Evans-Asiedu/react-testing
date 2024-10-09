@@ -1,7 +1,7 @@
-import ExpandableText from "../components/ExpandableText";
+import BrowseProducts from "./BrowseProductsPage";
 
 const PlaygroundPage = () => {
-  return <ExpandableText text="short text" />;
+  return <BrowseProducts />;
 };
 
 export default PlaygroundPage;
