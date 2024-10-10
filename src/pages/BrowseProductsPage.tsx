@@ -1,24 +1,19 @@
-import { Select, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
 import axios from "axios";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "react-query";
+import CategorySelect from "../components/CategorySelect";
 import QuantitySelector from "../components/QuantitySelector";
-import { Category, Product } from "../entities";
+import { Product } from "../entities";
 
 function BrowseProducts() {
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
-  });
-
   const productsQuery = useQuery<Product[], Error>({
     queryKey: ["products"],
     queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
 
-  //const [products, setProducts] = useState<Product[]>([]);
   // const [categories, setCategories] = useState<Category[]>([]);
   //const [isProductsLoading, setProductsLoading] = useState(false);
   // const [isCategoriesLoading, setCategoriesLoading] = useState(false);
@@ -28,71 +23,41 @@ function BrowseProducts() {
     number | undefined
   >();
 
-  // useEffect(() => {
-  //   // const fetchProducts = async () => {
-  //   //   try {
-  //   //     setProductsLoading(true);
-  //   //     const { data } = await axios.get<Product[]>("/products");
-  //   //     setProducts(data);
-  //   //   } catch (error) {
-  //   //     if (error instanceof AxiosError) setErrorProducts(error.message);
-  //   //     else setErrorProducts("An unexpected error occurred");
-  //   //   } finally {
-  //   //     setProductsLoading(false);
-  //   //   }
-  //   // };
-  //   // const fetchCategories = async () => {
-  //   //   try {
-  //   //     setCategoriesLoading(true);
-  //   //     const { data } = await axios.get<Category[]>("/categories");
-  //   //     setCategories(data);
-  //   //   } catch (error) {
-  //   //     if (error instanceof AxiosError) setErrorCategories(error.message);
-  //   //     else setErrorCategories("An unexpected error occurred");
-  //   //   } finally {
-  //   //     setCategoriesLoading(false);
-  //   //   }
-  //   // };
-  //   // fetchCategories();
-  //   //fetchProducts();
-  // }, []);
-
-  // if (errorProducts) return <div>Error: {errorProducts}</div>;
   if (productsQuery.error)
     return <div>Error: {productsQuery.error.message}</div>;
 
-  const renderCategories = () => {
-    const { isLoading, error, data: categories } = categoriesQuery;
-    if (isLoading)
-      return (
-        <div role="progressbar" aria-label="Loading categories">
-          <Skeleton />
-        </div>
-      );
-    // if (errorCategories) return <div>Error: {errorCategories}</div>;
-    if (error) return null;
+  // const renderCategories = () => {
+  //   const { isLoading, error, data: categories } = categoriesQuery;
+  //   if (isLoading)
+  //     return (
+  //       <div role="progressbar" aria-label="Loading categories">
+  //         <Skeleton />
+  //       </div>
+  //     );
+  //   // if (errorCategories) return <div>Error: {errorCategories}</div>;
+  //   if (error) return null;
 
-    return (
-      <Select.Root
-        onValueChange={(categoryId) =>
-          setSelectedCategoryId(parseInt(categoryId))
-        }
-      >
-        <Select.Trigger placeholder="Filter by Category" />
-        <Select.Content>
-          <Select.Group>
-            <Select.Label>Category</Select.Label>
-            <Select.Item value="all">All</Select.Item>
-            {categories?.map((category) => (
-              <Select.Item key={category.id} value={category.id.toString()}>
-                {category.name}
-              </Select.Item>
-            ))}
-          </Select.Group>
-        </Select.Content>
-      </Select.Root>
-    );
-  };
+  //   return (
+  //     <Select.Root
+  //       onValueChange={(categoryId) =>
+  //         setSelectedCategoryId(parseInt(categoryId))
+  //       }
+  //     >
+  //       <Select.Trigger placeholder="Filter by Category" />
+  //       <Select.Content>
+  //         <Select.Group>
+  //           <Select.Label>Category</Select.Label>
+  //           <Select.Item value="all">All</Select.Item>
+  //           {categories?.map((category) => (
+  //             <Select.Item key={category.id} value={category.id.toString()}>
+  //               {category.name}
+  //             </Select.Item>
+  //           ))}
+  //         </Select.Group>
+  //       </Select.Content>
+  //     </Select.Root>
+  //   );
+  // };
 
   const renderProducts = () => {
     const skeletons = [1, 2, 3, 4, 5];
@@ -151,7 +116,11 @@ function BrowseProducts() {
   return (
     <div>
       <h1>Products</h1>
-      <div className="max-w-xs">{renderCategories()}</div>
+      <div className="max-w-xs">
+        <CategorySelect
+          onChange={(categoryId) => setSelectedCategoryId(categoryId)}
+        />
+      </div>
       {renderProducts()}
     </div>
   );
