@@ -23,9 +23,9 @@ describe("QuantitySelector", () => {
       screen.queryByRole("button", { name: /add to cart/i });
 
     const getQuantityControls = () => ({
-      quantity: screen.getByRole("status"),
-      decrementButton: screen.getByRole("button", { name: "-" }),
-      incrementButton: screen.getByRole("button", { name: "+" }),
+      quantity: screen.queryByRole("status"),
+      decrementButton: screen.queryByRole("button", { name: "-" }),
+      incrementButton: screen.queryByRole("button", { name: "+" }),
     });
 
     const user = userEvent.setup();
@@ -37,12 +37,12 @@ describe("QuantitySelector", () => {
 
     const incrementQuantity = async () => {
       const { incrementButton } = getQuantityControls();
-      await user.click(incrementButton);
+      await user.click(incrementButton!);
     };
 
     const decrementQuantity = async () => {
       const { decrementButton } = getQuantityControls();
-      await user.click(decrementButton);
+      await user.click(decrementButton!);
     };
 
     return {
