@@ -1,8 +1,7 @@
 import "@testing-library/jest-dom/vitest";
+import { PropsWithChildren } from "react";
 import ResizeObserver from "resize-observer-polyfill";
 import { server } from "./mocks/server";
-import { PropsWithChildren } from "react";
-import { withAuthenticationRequired } from "@auth0/auth0-react";
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
